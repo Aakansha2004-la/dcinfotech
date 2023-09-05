@@ -1,0 +1,33 @@
+.header {
+    margin: 0 10rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header__img {
+    display: flex;
+    align-items: flex-end;
+}
+
+.header__img img {
+    width: 500px;
+}
+
+.header__body {
+    font-size: large;
+}
+
+.header__body h1 {
+    font-size: 70px;
+    margin-bottom: 20px;
+}
+
+.header__body h2 {
+    margin-bottom: 20px;
+}
+
+.header__body p {
+    color: var(--color-subtext);
+    margin-bottom: 20px;
+}

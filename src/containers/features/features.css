@@ -1,0 +1,14 @@
+.features {
+    background-color: var(--color-button);
+    height: 200px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.features__detail {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 2px 5px 10px #333;
+}
