@@ -9,6 +9,8 @@ import { apiGetClasses } from '../../services/ClassServices';
 import MultiSelectTeachers from '../../components/MultiSelectTeachers';
 import MultiSelectSubjects from '../../components/MultiSelectSubjects';
 import { apiGetMostEnrolledCourse } from '../../services/EnrollServices';
+import { toast } from 'react-toastify';
+
 
 const { RangePicker } = DatePicker;
 
@@ -27,16 +29,16 @@ const Courses = () => {
 
     const [hotCourse, setHotCourse] = useState(null);
 
-    console.log(`hot Course ` + JSON.stringify(hotCourse));
+
 
     useEffect(() => {
         const getMostEnrolledCourse = async () => {
             const courseResponse = await apiGetMostEnrolledCourse();
-            console.log(courseResponse.data);
+            console.log(courseResponse);
             const hotCourseData = {
-                ...courseResponse.data,
-                startAt: dayjs(courseResponse.data.start_at).format('DD/MM/YYYY'),
-                endAt: dayjs(courseResponse.data.end_at).format('DD/MM/YYYY'),
+                ...courseResponse.data[0],
+                startAt: dayjs(courseResponse.data[0].start_at).format('DD/MM/YYYY'),
+                endAt: dayjs(courseResponse.data[0].end_at).format('DD/MM/YYYY'),
             }
             setHotCourse(hotCourseData);
         }
@@ -46,26 +48,54 @@ const Courses = () => {
     }, [])
 
     useEffect(() => {
-        const getCourse = async () => {
-            const coursesResponse = await apiGetCourses('ASC', page, 4, search, startDate, endDate, teacherIds, subjectIds);
-            console.log(coursesResponse.data);
-            const meta = coursesResponse.data.meta;
-            setTotalPage(meta.pageCount);
-            const get = coursesResponse.data.data?.map(course => {
-                return {
-                    ...course,
-                    startAt: dayjs(course.start_at).format('DD/MM/YYYY'),
-                    endAt: dayjs(course.end_at).format('DD/MM/YYYY'),
-                }
-            });
-            // console.log(Array.isArray(get));
-            setCourses(get);
-            return () => {
-                console.log('Unmount Courses');
-            }
+        apiGetCourses('ASC', page, 4, search, startDate, endDate, teacherIds, subjectIds)
+            .then((coursesResponse) => {
+                console.log(coursesResponse);
+                const meta = coursesResponse.data.meta;
+                console.log(meta);
+                setTotalPage(meta.pageCount);
+                const get = coursesResponse.data.data?.map(course => {
+                    return {
+                        ...course,
+                        startAt: dayjs(course.start_at).format('DD/MM/YYYY'),
+                        endAt: dayjs(course.end_at).format('DD/MM/YYYY'),
+                    }
+                });
+                // console.log(Array.isArray(get));
+                setCourses(get);
+            })
+            .catch((error) => {
+                toast.error(error);
+                return;
+            })
+        return () => {
+            console.log('Unmount Courses');
         }
-        getCourse();
-    }, [page, search, startDate, endDate, teacherIds, subjectIds])
+    }, [page, search, startDate, endDate, teacherIds, subjectIds]);
+    // const getCourse = async () => {
+
+
+
+    //     //     const coursesResponse = await apiGetCourses('ASC', page, 4, search, startDate, endDate, teacherIds, subjectIds);
+    //     //     console.log(coursesResponse);
+    //     //     const meta = coursesResponse.data.meta;
+    //     //     console.log(meta);
+    //     //     setTotalPage(meta.pageCount);
+    //     //     const get = coursesResponse.data.data?.map(course => {
+    //     //         return {
+    //     //             ...course,
+    //     //             startAt: dayjs(course.start_at).format('DD/MM/YYYY'),
+    //     //             endAt: dayjs(course.end_at).format('DD/MM/YYYY'),
+    //     //         }
+    //     //     });
+    //     //     // console.log(Array.isArray(get));
+    //     //     setCourses(get);
+    //     //     return () => {
+    //     //         console.log('Unmount Courses');
+    //     //     }
+    //     // }
+    //     // getCourse();
+    // }, [page, search, startDate, endDate, teacherIds, subjectIds])
 
     const handleChange = (event, value) => {
         setPage(value);
@@ -103,7 +133,6 @@ const Courses = () => {
         setSubjectIds(subjectIds);
         console.log(subjectIds);
     }
-
 
     return (
         <div className='w-full h-screen flex justify-center items-center'>

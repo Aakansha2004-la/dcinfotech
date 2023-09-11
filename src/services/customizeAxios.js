@@ -1,9 +1,11 @@
-import axios from "axios";
+import axios from 'axios';
+import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { toast } from 'react-toastify';
 
 const instance = axios.create({
-    baseURL: 'http://localhost:8080',
-});
-
+    baseURL: "http://localhost:8080"
+})
 
 instance.interceptors.request.use(
     (config) => {
@@ -18,15 +20,22 @@ instance.interceptors.request.use(
     }
 );
 
-// Add a response interceptor
+
 instance.interceptors.response.use(function (response) {
-    // Any status code that lie within the range of 2xx cause this function to trigger
-    // Do something with response data
     return response.data;
 }, function (error) {
-    // Any status codes that falls outside the range of 2xx cause this function to trigger
-    // Do something with response error
+    if (
+        error.response.status === 401
+    ) {
+        window.location.href = '/';
+        localStorage.clear();
+        return Promise.reject(error)
+    }
+
     return Promise.reject(error);
 });
 
+
+
 export default instance;
+// export { AxiosInterceptor }

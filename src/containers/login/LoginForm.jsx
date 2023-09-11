@@ -21,9 +21,10 @@ const LoginForm = ({ handleExitLogin }) => {
     let res = await apiLogin(username, password);
     console.log(JSON.stringify(res.data));
     if (res.success) {
+      console.log(JSON.stringify(res.success));
       toast.success('Login successfully');
-      localStorage.setItem('profile', JSON.stringify(res.data));
       localStorage.setItem('token', res.data.access_token);
+      navigate('/');
       handleExitLogin();
     } else {
       toast.error(res.data);

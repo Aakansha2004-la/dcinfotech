@@ -1,42 +1,40 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import CourseBox from '../../components/CourseBox'
+import dayjs from 'dayjs';
+import { toast } from 'react-toastify';
+import { apiGetCourses } from '../../services/CourseServices';
+import { apiGetMostEnrolledCourse } from '../../services/EnrollServices';
 
-const courses = [
-    {
-        id: 1,
-        name: 'Math 1',
-        subject: 'Math',
-        teacher: 'Teacher',
-        startAt: '2023/09/06',
-        endAt: '2024/09/06',
-        image: './image/math.jpg'
-    },
-    {
-        id: 2,
-        name: 'Math 2',
-        subject: 'Math',
-        teacher: 'Teacher',
-        startAt: '2023/09/06',
-        endAt: '2024/09/06',
-        image: './image/math2.jpg'
-    },
-    {
-        id: 3,
-        name: 'Math 3',
-        subject: 'Math',
-        teacher: 'Teacher',
-        startAt: '2023/09/06',
-        endAt: '2024/09/06',
-        image: './image/math3.jpg'
-    },
-]
+
 
 const TrendingCourses = () => {
+
+    const [hotCourses, setHotCourses] = useState(null);
+    console.log(hotCourses);
+
+    useEffect(() => {
+        const getMostEnrolledCourse = async () => {
+            const coursesResponse = await apiGetMostEnrolledCourse();
+            const hotCourseData = coursesResponse.data.map(course => {
+                return {
+                    ...course,
+                    startAt: dayjs(course.start_at).format('DD/MM/YYYY'),
+                    endAt: dayjs(course.end_at).format('DD/MM/YYYY'),
+                }
+            })
+            setHotCourses(hotCourseData);
+        }
+        getMostEnrolledCourse();
+        return () => {
+        }
+    }, [])
+
+
     return (
         <div id='trending_course' className='flex-col justify-center items-center'>
             <h3 className='font-bold text-4xl my-20 text-center'>Most Trending Course</h3>
             <div className='mb-20 flex flex-row justify-center items-center'>
-                {courses.map(course => {
+                {hotCourses && hotCourses?.map(course => {
                     return <CourseBox course={course} key={course.id} />
                 })}
             </div>
