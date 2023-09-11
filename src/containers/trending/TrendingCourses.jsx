@@ -33,7 +33,7 @@ const courses = [
 
 const TrendingCourses = () => {
     return (
-        <div className='flex-col justify-center items-center'>
+        <div id='trending_course' className='flex-col justify-center items-center'>
             <h3 className='font-bold text-4xl my-20 text-center'>Most Trending Course</h3>
             <div className='mb-20 flex flex-row justify-center items-center'>
                 {courses.map(course => {

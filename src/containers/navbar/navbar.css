@@ -48,3 +48,9 @@
 .btn:hover {
     background-color: rgb(90, 123, 124);
 }
+
+.active {
+    color: var(--color-button);
+    border-bottom-width: 2px;
+    border-color: var(--color-button);
+}
