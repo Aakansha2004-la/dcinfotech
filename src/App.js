@@ -1,20 +1,25 @@
 import './App.css';
 import { Navbar, Footer, Home, Courses, About, Contact, Profile, LoginForm } from './containers';
-import { ToastContainer } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useLocation } from 'react-router-dom';
 import { Container } from 'react-bootstrap';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { AxiosInterceptor } from './services/customizeAxios';
 import LoginPage from './containers/login/LoginPage';
 import RequireAuth from './components/RequiredAuth';
+import CoursesManagement from './containers/courses/CoursesManagement';
 
 function App() {
+
+  const location = useLocation();
+  useEffect(() => {
+    console.log("url changed")
+  }, [location]);
 
   return (
     <>
       <div className="App">
-        {/* <AxiosInterceptor> */}
         <Navbar />
         <Container>
           <Routes>
@@ -26,23 +31,26 @@ function App() {
             <Route path='/contact' element={<Contact />} />
             <Route path='/profile' element={<Profile />} />
             <Route path='/login' element={<LoginPage />} />
+            <Route element={<RequireAuth allowedRoles={['student', 'admin', 'teacher']} />}>
+              <Route path='/admin/courses' element={<CoursesManagement />} />
+            </Route>
           </Routes>
         </Container>
         <Footer />
-        {/* </AxiosInterceptor> */}
+        <ToastContainer
+          position="top-right"
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+        />
       </div>
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-      />
+
     </>
 
   );

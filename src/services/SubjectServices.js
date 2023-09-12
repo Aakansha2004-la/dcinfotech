@@ -13,4 +13,8 @@ const apiGetSubjects = (order = 'ASC', page = 1, take = 4, name, credit) => {
     });
 }
 
-export { apiGetSubjects }
+const apiGetAllSubjects = () => {
+    return axios.get('/subject/all-subjects');
+}
+
+export { apiGetSubjects, apiGetAllSubjects }

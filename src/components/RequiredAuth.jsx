@@ -17,7 +17,7 @@ const RequireAuth = ({ allowedRoles }) => {
                 : <Navigate to="/login" state={{ from: location }} replace />
         );
     } catch (e) {
-        toast.error(e);
+        toast.error('You have to login first');
         return <Navigate to="/login" replace />
     }
 

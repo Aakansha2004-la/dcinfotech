@@ -14,4 +14,8 @@ const apiGetTeachers = (order = 'ASC', page = 1, take = 4, full_name, gender, do
     });
 }
 
-export { apiGetTeachers }
+const apiGetAllTeachers = () => {
+    return axios.get('/teacher/all-teachers');
+}
+
+export { apiGetTeachers, apiGetAllTeachers }

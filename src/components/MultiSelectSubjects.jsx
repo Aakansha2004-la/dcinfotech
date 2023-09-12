@@ -39,7 +39,6 @@ function DebounceSelect({ fetchOptions, debounceTimeout = 800, ...props }) {
 // Usage of DebounceSelect
 
 async function fetchUserList(username) {
-    console.log('fetching user', username);
     return apiGetSubjects('ASC', 1, 10, username)
         .then((res) => res.data.data)
         .then((array) => array.map(
@@ -49,15 +48,13 @@ async function fetchUserList(username) {
             })
         ))
 }
-const MultiSelectSubjects = ({ value, onChange }) => {
+const MultiSelectSubjects = (props) => {
     // const [value, setValue] = useState([]);
     return (
         <DebounceSelect
-            mode="multiple"
-            value={value}
+            {...props}
             placeholder="Select Subjects"
             fetchOptions={fetchUserList}
-            onChange={onChange}
             style={{
                 width: '90%',
                 marginBlock: '15px'

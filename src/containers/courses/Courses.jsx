@@ -7,9 +7,10 @@ import dayjs from 'dayjs';
 import { DatePicker } from 'antd';
 import { apiGetClasses } from '../../services/ClassServices';
 import MultiSelectTeachers from '../../components/MultiSelectTeachers';
-import MultiSelectSubjects from '../../components/MultiSelectSubjects';
 import { apiGetMostEnrolledCourse } from '../../services/EnrollServices';
 import { toast } from 'react-toastify';
+import useAuth from '../../hooks/useAuth';
+import MultiSelectSubjects from '../../components/MultiSelectSubjects';
 
 
 const { RangePicker } = DatePicker;
@@ -26,10 +27,9 @@ const Courses = () => {
     const [endDate, setEndDate] = useState(null);
     const [teacherIds, setTeacherIds] = useState([]);
     const [subjectIds, setSubjectIds] = useState([]);
-
     const [hotCourse, setHotCourse] = useState(null);
 
-
+    const { auth, setAuth } = useAuth();
 
     useEffect(() => {
         const getMostEnrolledCourse = async () => {
@@ -48,54 +48,35 @@ const Courses = () => {
     }, [])
 
     useEffect(() => {
-        apiGetCourses('ASC', page, 4, search, startDate, endDate, teacherIds, subjectIds)
-            .then((coursesResponse) => {
-                console.log(coursesResponse);
-                const meta = coursesResponse.data.meta;
-                console.log(meta);
-                setTotalPage(meta.pageCount);
-                const get = coursesResponse.data.data?.map(course => {
-                    return {
-                        ...course,
-                        startAt: dayjs(course.start_at).format('DD/MM/YYYY'),
-                        endAt: dayjs(course.end_at).format('DD/MM/YYYY'),
-                    }
-                });
-                // console.log(Array.isArray(get));
-                setCourses(get);
-            })
-            .catch((error) => {
-                toast.error(error);
-                return;
-            })
+        try {
+            apiGetCourses('ASC', page, 4, search, startDate, endDate, teacherIds, subjectIds)
+                .then((coursesResponse) => {
+                    console.log(coursesResponse);
+                    const meta = coursesResponse.data.meta;
+                    console.log(meta);
+                    setTotalPage(meta.pageCount);
+                    const get = coursesResponse.data.data?.map(course => {
+                        return {
+                            ...course,
+                            startAt: dayjs(course.start_at).format('DD/MM/YYYY'),
+                            endAt: dayjs(course.end_at).format('DD/MM/YYYY'),
+                        }
+                    });
+                    // console.log(Array.isArray(get));
+                    setCourses(get);
+                })
+                .catch((error) => {
+                    toast.error(error);
+                    return;
+                })
+        } catch (e) {
+            toast.error(e + '');
+        }
+
         return () => {
             console.log('Unmount Courses');
         }
     }, [page, search, startDate, endDate, teacherIds, subjectIds]);
-    // const getCourse = async () => {
-
-
-
-    //     //     const coursesResponse = await apiGetCourses('ASC', page, 4, search, startDate, endDate, teacherIds, subjectIds);
-    //     //     console.log(coursesResponse);
-    //     //     const meta = coursesResponse.data.meta;
-    //     //     console.log(meta);
-    //     //     setTotalPage(meta.pageCount);
-    //     //     const get = coursesResponse.data.data?.map(course => {
-    //     //         return {
-    //     //             ...course,
-    //     //             startAt: dayjs(course.start_at).format('DD/MM/YYYY'),
-    //     //             endAt: dayjs(course.end_at).format('DD/MM/YYYY'),
-    //     //         }
-    //     //     });
-    //     //     // console.log(Array.isArray(get));
-    //     //     setCourses(get);
-    //     //     return () => {
-    //     //         console.log('Unmount Courses');
-    //     //     }
-    //     // }
-    //     // getCourse();
-    // }, [page, search, startDate, endDate, teacherIds, subjectIds])
 
     const handleChange = (event, value) => {
         setPage(value);
@@ -156,6 +137,7 @@ const Courses = () => {
                             onChange={onChangeTeachers}
                         />
                         <MultiSelectSubjects
+                            mode={'multiple'}
                             value={subjectIds}
                             onChange={onChangeSubjects}
                         />

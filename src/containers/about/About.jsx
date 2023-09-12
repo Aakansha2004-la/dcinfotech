@@ -1,6 +1,13 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom'
 
 const About = () => {
+    const navigate = useNavigate()
+
+    const handleContact = () => {
+        navigate('/contact');
+    }
+
     return (
         <div id='about' className='flex justify-center mx-52 shadow-lg rounded-2xl overflow-hidden mb-28'>
             <div className='basis-2/5 flex justify-center items-center h-96  p-10 px-20 overflow-hidden'>
@@ -15,7 +22,10 @@ const About = () => {
                     LMS has been built by all of dedications and hard-work, please enjoy your experience here.
                 </i>
                 <div className='flex justify-end mt-5'>
-                    <button className='rounded-full bg-slate-500 text-slate-100 px-5 py-2 hover:bg-color-bg hover:text-color-button hover:transition-all blur: transition-all'>Contact me</button>
+                    <button
+                        onClick={handleContact}
+                        className='rounded-full bg-slate-500 text-slate-100 px-5 py-2 hover:bg-color-bg hover:text-color-button hover:transition-all blur: transition-all'
+                    >Contact me</button>
                 </div>
             </div>
         </div>

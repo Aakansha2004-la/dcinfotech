@@ -4,16 +4,17 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { ThemeProvider } from "@material-tailwind/react";
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { ConfigProvider } from 'antd';
+import { AuthProvider } from './context/AuthProvider';
 
 const token = {
-  colorPrimary: '#62929e',
-  colorInfo: '#62929e',
-  colorBgBase: '#f1f1f9',
-  colorWarning: '#cf8a00',
-  colorSuccess: '#88b80f',
-  colorError: '#bb1e21'
+  colorPrimary: "#62929e",
+  colorInfo: "#62929e",
+  colorBgBase: "#f1f1f9",
+  colorWarning: "#cf8a00",
+  colorSuccess: "#88b80f",
+  colorError: "#bb1e21"
 }
   ;
 
@@ -22,13 +23,18 @@ const token = {
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <ThemeProvider>
-    <ConfigProvider theme={{ token }}>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    </ConfigProvider>
-  </ThemeProvider>
+  <BrowserRouter>
+    <AuthProvider>
+      <ThemeProvider>
+        <ConfigProvider theme={{ token }}>
+          <Routes>
+            <Route path="/*" element={<App />} />
+          </Routes>
+        </ConfigProvider>
+      </ThemeProvider>
+    </AuthProvider>
+  </BrowserRouter>
+
 );
 
 // If you want to start measuring performance in your app, pass a function
