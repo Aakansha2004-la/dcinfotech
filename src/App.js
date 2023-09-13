@@ -27,11 +27,12 @@ function App() {
             <Route element={<RequireAuth allowedRoles={['student', 'admin', 'teacher']} />}>
               <Route path='/courses' element={<Courses />} />
             </Route>
+
             <Route path='/about' element={<About />} />
             <Route path='/contact' element={<Contact />} />
             <Route path='/profile' element={<Profile />} />
             <Route path='/login' element={<LoginPage />} />
-            <Route element={<RequireAuth allowedRoles={['student', 'admin', 'teacher']} />}>
+            <Route element={<RequireAuth allowedRoles={['admin']} />}>
               <Route path='/admin/courses' element={<CoursesManagement />} />
             </Route>
           </Routes>

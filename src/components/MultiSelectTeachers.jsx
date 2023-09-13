@@ -58,8 +58,8 @@ const MultiSelectTeachers = ({ value, onChange, fetchAPI }) => {
             fetchOptions={fetchUserList}
             onChange={onChange}
             style={{
-                width: '90%',
-                marginBlock: '15px'
+                width: '50%',
+                marginInline: '15px'
             }}
         />
     );

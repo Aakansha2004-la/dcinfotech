@@ -2,10 +2,16 @@ import React, { useEffect, useState } from 'react'
 import useAuth from '../../hooks/useAuth';
 import dayjs from 'dayjs';
 import { toast } from 'react-toastify';
-import { apiGetCourses } from '../../services/CourseServices';
-import { Button, Modal, Pagination, Space, Table } from 'antd';
+import { apiDeleteCourse, apiGetCourses } from '../../services/CourseServices';
+import { Button, Modal, Pagination, Space, Table, message, DatePicker } from 'antd';
 import { showDeleteConfirm } from '../../components/crud/crud';
 import CreateCourseForm from './crud/CreateCourseForm';
+import UpdateCourseForm from './crud/UpdateCourseForm';
+import Search from 'antd/es/input/Search';
+import MultiSelectSubjects from '../../components/MultiSelectSubjects';
+import MultiSelectTeachers from '../../components/MultiSelectTeachers';
+
+const { RangePicker } = DatePicker;
 
 const CoursesManagement = () => {
 
@@ -20,35 +26,40 @@ const CoursesManagement = () => {
     const [pageSize, setPageSize] = useState(5);
 
     const [isOpenCreate, setIsOpenCreate] = useState(false);
+    const [isOpenUpdate, setIsOpenUpdate] = useState(false);
 
-    console.log('Lai render a');
+    const [updateCourse, setUpdateCourse] = useState();
+
+    const fetchCourses = () => {
+        apiGetCourses('DESC', page, pageSize, search, startDate, endDate, teacherIds, subjectIds)
+            .then((coursesResponse) => {
+                console.log(coursesResponse);
+                const meta = coursesResponse.data.meta;
+                console.log(meta);
+                setTotal(meta.itemCount);
+                const get = coursesResponse.data.data?.map(course => {
+                    return {
+                        ...course,
+                        start_at: dayjs(course.start_at).format('DD/MM/YYYY'),
+                        end_at: dayjs(course.end_at).format('DD/MM/YYYY'),
+                    }
+                });
+                // console.log(Array.isArray(get));
+                setCourses(get);
+            })
+            .catch((error) => {
+                toast.error(error);
+                return;
+            })
+    }
 
     useEffect(() => {
         try {
-            apiGetCourses('ASC', page, pageSize, search, startDate, endDate, teacherIds, subjectIds)
-                .then((coursesResponse) => {
-                    console.log(coursesResponse);
-                    const meta = coursesResponse.data.meta;
-                    console.log(meta);
-                    setTotal(meta.itemCount);
-                    const get = coursesResponse.data.data?.map(course => {
-                        return {
-                            ...course,
-                            start_at: dayjs(course.start_at).format('DD/MM/YYYY'),
-                            end_at: dayjs(course.end_at).format('DD/MM/YYYY'),
-                        }
-                    });
-                    // console.log(Array.isArray(get));
-                    setCourses(get);
-                })
-                .catch((error) => {
-                    toast.error(error);
-                    return;
-                })
-        } catch (e) {
+            fetchCourses();
+        }
+        catch (e) {
             toast.error(e + '');
         }
-
         return () => {
             console.log('Unmount Courses');
         }
@@ -84,28 +95,34 @@ const CoursesManagement = () => {
             title: 'Start Time',
             key: 'start_at',
             dataIndex: 'start_at',
+            sorter: (a, b) => dayjs(a.start_at, 'DD/MM/YYYY').diff(dayjs(b.start_at, 'DD/MM/YYYY')),
         },
         {
             title: 'End Time',
             key: 'end_at',
             dataIndex: 'end_at',
+            sorter: (a, b) => dayjs(a.end_at, 'DD/MM/YYYY').diff(dayjs(b.end_at, 'DD/MM/YYYY')),
         },
         {
             title: 'Image',
             key: 'image',
             dataIndex: 'image',
             ellipsis: true,
-
+            render: (_, record) => (
+                <img src={record.image}></img>
+            )
         },
         {
             title: 'Created at',
             key: 'created',
             dataIndex: 'created',
+            sorter: (a, b) => dayjs(a.created, 'DD/MM/YYYY').diff(dayjs(b.created, 'DD/MM/YYYY')),
         },
         {
             title: 'Updated at',
             key: 'updated',
             dataIndex: 'updated',
+            sorter: (a, b) => dayjs(a.updated, 'DD/MM/YYYY').diff(dayjs(b.updated, 'DD/MM/YYYY')),
         },
         {
             title: 'Action',
@@ -126,8 +143,9 @@ const CoursesManagement = () => {
         },
     ];
 
-    const handleEditCourse = ({ record }) => {
-        console.log(record);
+    const handleEditCourse = (record) => {
+        setIsOpenUpdate(true)
+        setUpdateCourse(record);
     }
 
     const deleteConfirmCourse = (course) => {
@@ -139,14 +157,24 @@ const CoursesManagement = () => {
                 <p><i>From {course.start_at} to {course.end_at}</i></p>
             </div>
         )
-        showDeleteConfirm('Do you want to delete this course?', content)
+        const handleDelete = async () => {
+            // console.log(course);
+            const res = await apiDeleteCourse(course.id);
+            if (res.success) {
+                message.success('Delete successfully');
+            } else {
+                message.error('Delete fail!');
+            }
+        }
+        showDeleteConfirm('Do you want to delete this course?', content, handleDelete, fetchCourses)
     }
 
     const data = courses?.map(course => (
         {
             ...course,
+            key: course.id,
             subject: course.subject.name,
-            teacher: course?.teacher.full_name,
+            teacher: course?.teacher?.full_name ?? 'None',
             created: dayjs(course.created).format('DD/MM/YYYY'),
             updated: dayjs(course.updated).format('DD/MM/YYYY'),
         }
@@ -160,12 +188,65 @@ const CoursesManagement = () => {
         setPage(currentPage);
     }
 
+    const handleChangeSearch = (e) => {
+        // console.log(e.target.value);
+        setSearch(e.target.value);
+        console.log(search);
+    }
+
+    const handleOnchangeDate = (dates, [start, end]) => {
+        if (dates) {
+            setStartDate(start);
+            setEndDate(end)
+        } else {
+            setStartDate('2020-01-01');
+            setEndDate('2030-01-01')
+        }
+    }
+
+    const onChangeTeachers = (value) => {
+        const teacherIds = value.map(v => v.value)
+        setTeacherIds(teacherIds);
+        console.log(teacherIds);
+    }
+
+    const onChangeSubjects = (value) => {
+        const subjectIds = value.map(v => v.value)
+        setSubjectIds(subjectIds);
+        console.log(subjectIds);
+    }
+
+    console.log(isOpenCreate);
 
     return (
         <div className='mx-20'>
             <div className='flex justify-between'>
-                <h3 className='font-bold text-4xl mb-10'>Courses Management</h3>
-                <Button size='large' type='dashed' onClick={() => { setIsOpenCreate(true) }}>Add New Course</Button>
+                <h3 className='font-bold text-4xl mb-5'>Courses Management</h3>
+                <Button size='large' type='primary' className='bg-color-button' onClick={() => { setIsOpenCreate(true) }}>Add New Course</Button>
+            </div>
+            <div className='flex items-center justify-between my-3'>
+                <Search
+                    onChange={handleChangeSearch}
+                    placeholder="Search what you wanna learn"
+                    allowClear
+                    style={{ width: '50%', marginInline: '15px' }} />
+                <RangePicker
+                    onChange={handleOnchangeDate}
+                    style={{ marginInline: '15px', width: '50%' }}
+                    defaultValue={[dayjs('01/01/2020', 'DD/MM/YYYY'), dayjs('01/01/2030', 'DD/MM/YYYY')]}
+                    format={'YYYY-MM-DD'}
+                />
+            </div>
+            <div className='flex justify-around mb-5'>
+                <MultiSelectTeachers
+                    value={teacherIds}
+                    onChange={onChangeTeachers}
+                />
+                <MultiSelectSubjects
+                    mode={'multiple'}
+                    value={subjectIds}
+                    onChange={onChangeSubjects}
+                />
             </div>
             <div>
                 <Table columns={columns} dataSource={data} pagination={false} />
@@ -182,7 +263,12 @@ const CoursesManagement = () => {
                 </div>
                 <Modal style={{ top: 50 }} footer={null} title={'Create New Course'} open={isOpenCreate} onCancel={() => { setIsOpenCreate(false) }}>
                     <div>
-                        <CreateCourseForm />
+                        <CreateCourseForm fetchCourses={fetchCourses} onClose={() => { setIsOpenCreate(false) }} />
+                    </div>
+                </Modal>
+                <Modal style={{ top: 50 }} footer={null} title={'Update Course'} open={isOpenUpdate} onCancel={() => { setIsOpenUpdate(false) }}>
+                    <div>
+                        <UpdateCourseForm fetchCourses={fetchCourses} course={updateCourse} onClose={() => { setIsOpenUpdate(false) }} />
                     </div>
                 </Modal>
             </div>

@@ -16,4 +16,12 @@ const apiGetCourses = (order = 'ASC', page = 1, take = 4, name, start_at, end_at
     });
 }
 
-export { apiGetCourses }
+const apiCreateCourse = (data) => {
+    return axios.post('/course/create', { ...data });
+}
+
+const apiDeleteCourse = (id) => {
+    return axios.delete(`/course/delete/${id}`)
+}
+
+export { apiGetCourses, apiCreateCourse, apiDeleteCourse }

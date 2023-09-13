@@ -9,6 +9,7 @@ const Profile = () => {
     const [imageList, setImageList] = useState([]);
 
     const imageListRef = ref(storage, 'images/');
+    console.log(imageUpload);
 
     const uploadImage = () => {
         if (imageUpload === null) return;

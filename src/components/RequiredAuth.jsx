@@ -2,6 +2,7 @@ import { useLocation, Navigate, Outlet } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import jwtDecode from "jwt-decode";
 import { toast } from "react-toastify";
+import Forbidden from "../containers/error/Forbidden";
 
 const RequireAuth = ({ allowedRoles }) => {
     // const { auth } = useAuth();
@@ -14,7 +15,7 @@ const RequireAuth = ({ allowedRoles }) => {
         return (
             roles.find(role => allowedRoles?.includes(role))
                 ? <Outlet />
-                : <Navigate to="/login" state={{ from: location }} replace />
+                : <Forbidden />
         );
     } catch (e) {
         toast.error('You have to login first');

@@ -13,13 +13,15 @@ import { useNavigate } from 'react-router-dom';
 
 const { RangePicker } = DatePicker
 
-const CreateCourseForm = ({ onClose, fetchCourses }) => {
+const UpdateCourseForm = ({ course }) => {
     const [subjectList, setSubjectList] = useState();
     const [teacherList, setTeacherList] = useState();
     const [courseTime, setCourseTime] = useState([]);
     const [isLoading, setIsLoading] = useState(false)
     const [form] = Form.useForm();
-    const navigate = useNavigate();
+
+    const oldData = course.record;
+    console.log(oldData);
 
     useEffect(() => {
         const getAllSubjects = async () => {
@@ -77,9 +79,7 @@ const CreateCourseForm = ({ onClose, fetchCourses }) => {
         setIsLoading(false);
         message.success('Add successfully');
         form.resetFields();
-        onClose();
-        fetchCourses();
-        navigate('/admin/courses');
+        console.log(response);
     }
 
 
@@ -110,7 +110,7 @@ const CreateCourseForm = ({ onClose, fetchCourses }) => {
                     }
                 ]}
             >
-                <Input placeholder="Example: PRO1" />
+                <Input placeholder="Example: PRO1" defaultValue={oldData.name} />
             </Form.Item>
 
             <Form.Item
@@ -128,6 +128,7 @@ const CreateCourseForm = ({ onClose, fetchCourses }) => {
                 <Select
                     placeholder="Select a subject"
                     options={subjectList}
+                    defaultValue={oldData.subject}
                 />
             </Form.Item>
 
@@ -140,6 +141,7 @@ const CreateCourseForm = ({ onClose, fetchCourses }) => {
                     allowClear
                     placeholder="Select a teacher"
                     options={teacherList}
+                    defaultValue={oldData.teacher}
                 />
             </Form.Item>
 
@@ -158,6 +160,7 @@ const CreateCourseForm = ({ onClose, fetchCourses }) => {
                     style={{ width: '100%' }}
                     onChange={handleOnchangeDate}
                     format={'YYYY-MM-DD'}
+                    defaultValue={[dayjs(oldData.start_at, 'DD/MM/YYYY'), dayjs(oldData.end_at, 'DD/MM/YYYY')]}
                 />
             </Form.Item>
 
@@ -165,12 +168,6 @@ const CreateCourseForm = ({ onClose, fetchCourses }) => {
                 hasFeedback
                 label="Course image"
                 name="image"
-                validateTrigger="onBlur"
-                rules={[
-                    {
-                        required: true,
-                    },
-                ]}
             >
                 <Upload
                     maxCount={1}
@@ -212,4 +209,4 @@ const CreateCourseForm = ({ onClose, fetchCourses }) => {
     )
 }
 
-export default CreateCourseForm
+export default UpdateCourseForm

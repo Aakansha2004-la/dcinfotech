@@ -1,8 +1,8 @@
-import { Modal } from "antd";
+import { Modal, message } from "antd";
 import { ExclamationCircleFilled } from '@ant-design/icons';
 const { confirm } = Modal
 
-const showDeleteConfirm = (warning, content, handleDelete) => {
+const showDeleteConfirm = (warning, content, handleDelete, fetchCourses) => {
     confirm({
         title: warning,
         icon: <ExclamationCircleFilled />,
@@ -10,8 +10,9 @@ const showDeleteConfirm = (warning, content, handleDelete) => {
         okText: 'Yes',
         okType: 'danger',
         cancelText: 'No',
-        onOk() {
-            handleDelete();
+        async onOk() {
+            await handleDelete();
+            await fetchCourses();
         },
         onCancel() {
             console.log('Cancel');

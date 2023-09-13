@@ -11,7 +11,8 @@ import { AuthProvider } from './context/AuthProvider';
 const token = {
   colorPrimary: "#62929e",
   colorInfo: "#62929e",
-  colorBgBase: "#f1f1f9",
+  colorBgBase: "#ffffff",
+  colorBg: "#62929e",
   colorWarning: "#cf8a00",
   colorSuccess: "#88b80f",
   colorError: "#bb1e21"
