@@ -2,6 +2,9 @@
 import axios from "./customizeAxios";
 
 const apiGetCourses = (order = 'ASC', page = 1, take = 4, name, start_at, end_at, teachers_id, subjects_id) => {
+
+    console.log('Teacher id' + teachers_id);
+    console.log('subjectIds' + subjects_id);
     return axios.get('/course', {
         params: {
             order,
@@ -24,4 +27,8 @@ const apiDeleteCourse = (id) => {
     return axios.delete(`/course/delete/${id}`)
 }
 
-export { apiGetCourses, apiCreateCourse, apiDeleteCourse }
+const apiUpdateCourse = (id, data) => {
+    return axios.put(`/course/update/${id}`, { ...data })
+}
+
+export { apiGetCourses, apiCreateCourse, apiDeleteCourse, apiUpdateCourse }

@@ -48,19 +48,15 @@ async function fetchUserList(username) {
             })
         ))
 }
-const MultiSelectTeachers = ({ value, onChange, fetchAPI }) => {
-    // const [value, setValue] = useState([]);
+const MultiSelectTeachers = ({ value, onChange, className }) => {
     return (
         <DebounceSelect
+            className={className}
             mode="multiple"
             value={value}
             placeholder="Select teachers"
             fetchOptions={fetchUserList}
             onChange={onChange}
-            style={{
-                width: '50%',
-                marginInline: '15px'
-            }}
         />
     );
 };

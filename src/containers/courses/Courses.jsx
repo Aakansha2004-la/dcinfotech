@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Input } from 'antd';
+import { Input, Modal } from 'antd';
 import CourseBox from '../../components/CourseBox';
 import { Pagination } from '@mui/material';
 import { apiGetCourses } from '../../services/CourseServices';
@@ -125,18 +125,21 @@ const Courses = () => {
                             onChange={handleChangeSearch}
                             placeholder="Search what you wanna learn"
                             allowClear
-                            style={{ width: '90%', marginBlock: '15px' }} />
+                            className='w-11/12 my-3'
+                        />
                         <RangePicker
                             onChange={handleOnchangeDate}
-                            style={{ width: '90%', marginBlock: '15px' }}
                             defaultValue={[dayjs('01/01/2020', 'DD/MM/YYYY'), dayjs('01/01/2030', 'DD/MM/YYYY')]}
                             format={'YYYY-MM-DD'}
+                            className='w-11/12 my-3'
                         />
                         <MultiSelectTeachers
                             value={teacherIds}
                             onChange={onChangeTeachers}
+                            className={'w-11/12 my-3'}
                         />
                         <MultiSelectSubjects
+                            className={'w-11/12 my-3'}
                             mode={'multiple'}
                             value={subjectIds}
                             onChange={onChangeSubjects}
@@ -163,7 +166,6 @@ const Courses = () => {
                         count={totalPage}
                     />
                 </div>
-                <div></div>
             </div>
         </div>
 

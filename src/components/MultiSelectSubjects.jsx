@@ -55,10 +55,6 @@ const MultiSelectSubjects = (props) => {
             {...props}
             placeholder="Select Subjects"
             fetchOptions={fetchUserList}
-            style={{
-                width: '50%',
-                marginInline: '15px'
-            }}
         />
     );
 };

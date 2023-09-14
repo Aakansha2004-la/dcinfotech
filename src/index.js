@@ -15,7 +15,8 @@ const token = {
   colorBg: "#62929e",
   colorWarning: "#cf8a00",
   colorSuccess: "#88b80f",
-  colorError: "#bb1e21"
+  colorError: "#bb1e21",
+  fontFamily: '"Roboto Slab", serif'
 }
   ;
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import LoginForm from '../login/LoginForm';
 import RegisterForm from '../register/RegisterForm';
 import './navbar.css'
@@ -8,12 +8,24 @@ import { useLocation, NavLink, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { Modal } from 'antd';
 import useAuth from '../../hooks/useAuth';
+import jwtDecode from 'jwt-decode';
 
 const Navbar = () => {
     const [login, setLogin] = useState(false);
     const [register, setRegister] = useState(false);
     const navigate = useNavigate();
     const { auth, setAuth } = useAuth();
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            var decoded = jwtDecode(token);
+            setAuth({
+                userId: decoded.id,
+                roles: decoded.roles
+            })
+        }
+    }, [])
 
     const handleLogout = () => {
         localStorage.clear();

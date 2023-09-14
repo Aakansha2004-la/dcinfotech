@@ -24,7 +24,6 @@ const CoursesManagement = () => {
     const [teacherIds, setTeacherIds] = useState([]);
     const [subjectIds, setSubjectIds] = useState([]);
     const [pageSize, setPageSize] = useState(5);
-
     const [isOpenCreate, setIsOpenCreate] = useState(false);
     const [isOpenUpdate, setIsOpenUpdate] = useState(false);
 
@@ -33,9 +32,7 @@ const CoursesManagement = () => {
     const fetchCourses = () => {
         apiGetCourses('DESC', page, pageSize, search, startDate, endDate, teacherIds, subjectIds)
             .then((coursesResponse) => {
-                console.log(coursesResponse);
                 const meta = coursesResponse.data.meta;
-                console.log(meta);
                 setTotal(meta.itemCount);
                 const get = coursesResponse.data.data?.map(course => {
                     return {
@@ -54,15 +51,14 @@ const CoursesManagement = () => {
     }
 
     useEffect(() => {
+
         try {
             fetchCourses();
         }
         catch (e) {
             toast.error(e + '');
         }
-        return () => {
-            console.log('Unmount Courses');
-        }
+        return () => { }
     }, [pageSize, page, search, startDate, endDate, teacherIds, subjectIds]);
 
     const columns = [
@@ -70,7 +66,7 @@ const CoursesManagement = () => {
             title: 'ID',
             dataIndex: 'id',
             key: 'id',
-            width: 80,
+            width: 50,
         },
         {
             title: 'Name',
@@ -111,6 +107,12 @@ const CoursesManagement = () => {
             render: (_, record) => (
                 <img src={record.image}></img>
             )
+        },
+        {
+            title: 'Description',
+            key: 'description',
+            dataIndex: 'description',
+            ellipsis: true,
         },
         {
             title: 'Created at',
@@ -165,15 +167,18 @@ const CoursesManagement = () => {
             } else {
                 message.error('Delete fail!');
             }
+            fetchCourses();
         }
-        showDeleteConfirm('Do you want to delete this course?', content, handleDelete, fetchCourses)
+        showDeleteConfirm('Do you want to delete this course?', content, handleDelete)
     }
 
     const data = courses?.map(course => (
         {
             ...course,
             key: course.id,
+            subject_id: course.subject.id,
             subject: course.subject.name,
+            teacher_id: course.teacher?.id ?? '0',
             teacher: course?.teacher?.full_name ?? 'None',
             created: dayjs(course.created).format('DD/MM/YYYY'),
             updated: dayjs(course.updated).format('DD/MM/YYYY'),
@@ -216,8 +221,6 @@ const CoursesManagement = () => {
         console.log(subjectIds);
     }
 
-    console.log(isOpenCreate);
-
     return (
         <div className='mx-20'>
             <div className='flex justify-between'>
@@ -229,20 +232,23 @@ const CoursesManagement = () => {
                     onChange={handleChangeSearch}
                     placeholder="Search what you wanna learn"
                     allowClear
-                    style={{ width: '50%', marginInline: '15px' }} />
+                    className='w-1/2 mx-3'
+                />
                 <RangePicker
                     onChange={handleOnchangeDate}
-                    style={{ marginInline: '15px', width: '50%' }}
+                    className='w-1/2 mx-3'
                     defaultValue={[dayjs('01/01/2020', 'DD/MM/YYYY'), dayjs('01/01/2030', 'DD/MM/YYYY')]}
                     format={'YYYY-MM-DD'}
                 />
             </div>
             <div className='flex justify-around mb-5'>
                 <MultiSelectTeachers
+                    className={'w-1/2 mx-3'}
                     value={teacherIds}
                     onChange={onChangeTeachers}
                 />
                 <MultiSelectSubjects
+                    className={'w-1/2 mx-3'}
                     mode={'multiple'}
                     value={subjectIds}
                     onChange={onChangeSubjects}
@@ -266,7 +272,7 @@ const CoursesManagement = () => {
                         <CreateCourseForm fetchCourses={fetchCourses} onClose={() => { setIsOpenCreate(false) }} />
                     </div>
                 </Modal>
-                <Modal style={{ top: 50 }} footer={null} title={'Update Course'} open={isOpenUpdate} onCancel={() => { setIsOpenUpdate(false) }}>
+                <Modal destroyOnClose={true} style={{ top: 50 }} footer={null} title={'Update Course'} open={isOpenUpdate} onCancel={() => { setIsOpenUpdate(false) }}>
                     <div>
                         <UpdateCourseForm fetchCourses={fetchCourses} course={updateCourse} onClose={() => { setIsOpenUpdate(false) }} />
                     </div>

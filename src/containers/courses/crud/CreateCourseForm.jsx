@@ -9,6 +9,7 @@ import { v4 } from 'uuid';
 import { storage } from '../../../firebase';
 import { apiCreateCourse } from '../../../services/CourseServices';
 import { useNavigate } from 'react-router-dom';
+import TextArea from 'antd/es/input/TextArea';
 
 
 const { RangePicker } = DatePicker
@@ -62,6 +63,7 @@ const CreateCourseForm = ({ onClose, fetchCourses }) => {
 
 
     const onFinish = async (value) => {
+        console.log('value');
         console.log(value);
         setIsLoading(true);
         const data = {
@@ -70,19 +72,37 @@ const CreateCourseForm = ({ onClose, fetchCourses }) => {
             teacher_id: value.teacher_id,
             start_at: courseTime[0],
             end_at: courseTime[1],
+            description: value.description,
             image: await uploadImage(value.image.file),
         }
         console.log(data);
         const response = await apiCreateCourse(data);
-        setIsLoading(false);
-        message.success('Add successfully');
-        form.resetFields();
-        onClose();
-        fetchCourses();
-        navigate('/admin/courses');
+        if (response.success) {
+            setIsLoading(false);
+            message.success('Create successfully');
+            form.resetFields();
+            onClose();
+            fetchCourses();
+            navigate('/admin/courses');
+        } else {
+            setIsLoading(false);
+            message.error(response.data);
+        }
+
     }
 
-
+    const beforeUpload = (file) => {
+        console.log(file);
+        return new Promise((resolve, reject) => {
+            if (file.type.startsWith('image')) {
+                message.success('File is valid!');
+                reject('Success');
+            } else {
+                message.error('File has to be image');
+                resolve('File has to be image');
+            }
+        })
+    }
 
     return (
         <Form
@@ -163,6 +183,14 @@ const CreateCourseForm = ({ onClose, fetchCourses }) => {
 
             <Form.Item
                 hasFeedback
+                label="Description"
+                name="description"
+            >
+                <TextArea rows={3} maxLength={200} placeholder='Max 200 words'></TextArea>
+            </Form.Item>
+
+            <Form.Item
+                hasFeedback
                 label="Course image"
                 name="image"
                 validateTrigger="onBlur"
@@ -174,34 +202,22 @@ const CreateCourseForm = ({ onClose, fetchCourses }) => {
             >
                 <Upload
                     maxCount={1}
-                    beforeUpload={(file) => {
-                        console.log(file);
-                        return new Promise((resolve, reject) => {
-                            if (file.type.startsWith('image')) {
-                                message.success('File is valid!');
-                                reject('Success');
-                            } else {
-                                message.error('File has to be image');
-                                resolve('File has to be image');
-                            }
-                        })
-                    }}
+                    beforeUpload={beforeUpload}
                     accept={'.png,.jpg'}
                 >
                     <Button icon={<UploadOutlined />}>Click to Upload</Button>
                 </Upload>
             </Form.Item>
 
+
             <Form.Item className='flex justify-end' >
                 <Space>
                     <Button
-                        onClick={() => {
-                            form.resetFields();
-                        }}
+                        onClick={() => { form.resetFields() }}
                     >
                         Clear
                     </Button>
-                    <Button htmlType="submit" loading={isLoading}>
+                    <Button htmlType="submit" loading={isLoading} type='primary' className='bg-color-button'>
                         Submit
                     </Button>
                 </Space>
