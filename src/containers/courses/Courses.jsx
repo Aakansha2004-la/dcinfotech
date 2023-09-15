@@ -35,12 +35,7 @@ const Courses = () => {
         const getMostEnrolledCourse = async () => {
             const courseResponse = await apiGetMostEnrolledCourse();
             console.log(courseResponse);
-            const hotCourseData = {
-                ...courseResponse.data[0],
-                startAt: dayjs(courseResponse.data[0].start_at).format('DD/MM/YYYY'),
-                endAt: dayjs(courseResponse.data[0].end_at).format('DD/MM/YYYY'),
-            }
-            setHotCourse(hotCourseData);
+            setHotCourse(courseResponse.data[0]);
         }
         getMostEnrolledCourse();
         return () => {
@@ -55,13 +50,7 @@ const Courses = () => {
                     const meta = coursesResponse.data.meta;
                     console.log(meta);
                     setTotalPage(meta.pageCount);
-                    const get = coursesResponse.data.data?.map(course => {
-                        return {
-                            ...course,
-                            startAt: dayjs(course.start_at).format('DD/MM/YYYY'),
-                            endAt: dayjs(course.end_at).format('DD/MM/YYYY'),
-                        }
-                    });
+                    const get = coursesResponse.data.data;
                     // console.log(Array.isArray(get));
                     setCourses(get);
                 })
@@ -96,11 +85,6 @@ const Courses = () => {
             setStartDate('2020-01-01');
             setEndDate('2030-01-01')
         }
-    }
-
-    const getClasses = async () => {
-        const res = await apiGetClasses();
-        console.log(res);
     }
 
     const onChangeTeachers = (value) => {
@@ -148,14 +132,14 @@ const Courses = () => {
                     <div className='w-full'>
                         <h3 className='px-10 py-5 font-bold text-4xl text-white'>Hot Course</h3>
                         <div className='flex justify-center'>
-                            {hotCourse && <CourseBox course={hotCourse} />}
+                            {hotCourse && <CourseBox data={hotCourse} />}
                         </div>
                     </div>
                 </div>
                 <div className='basis-3/4 flex justify-center mt-10 relative'>
                     <div className='h-full w-full flex justify-center items-start'>
                         <div className='h-full mx-2 flex flex-wrap justify-center items-start' style={{ width: '89%' }}>
-                            {courses.map((course, index) => <CourseBox course={course} key={index} />)}
+                            {courses.map((course, index) => <div className='mx-10'><CourseBox data={course} key={index} /></div>)}
                         </div>
                     </div>
                     <Pagination

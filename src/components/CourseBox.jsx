@@ -1,19 +1,43 @@
-import { Button, Modal, Space } from 'antd';
+import { Button, Modal, Space, Spin, message } from 'antd';
 import React, { useState } from 'react'
 import useAuth from '../hooks/useAuth';
+import { apiEnrollCourse } from '../services/EnrollServices';
+import dayjs from 'dayjs';
 
-const CourseBox = ({ course }) => {
+const CourseBox = ({ data, enroll_date }) => {
     const [isOpenDetail, setIsOpenDetail] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const { auth } = useAuth();
+
+    console.log(data);
+
+    const course = {
+        ...data,
+        startAt: dayjs(data.start_at).format('DD/MM/YYYY'),
+        endAt: dayjs(data.end_at).format('DD/MM/YYYY'),
+    }
+
 
     const openDetail = () => {
         console.log(JSON.stringify(auth));
         setIsOpenDetail(true);
     }
 
+    const handleRegister = async () => {
+        setIsLoading(true);
+        const response = await apiEnrollCourse(course.id);
+        setIsLoading(false);
+        if (response.success) {
+            message.success('Register successfully');
+            setIsOpenDetail(false);
+        } else {
+            message.error(response.data);
+        }
+    }
+
     const CourseDetail = () => (
         <>
-            <h1 className='text-4xl font-extrabold mb-5'>{course.name}</h1>
+            <h1 className='text-4xl font-extrabold'>{course.name}</h1>
             <div className='flex'>
                 <div className='basis-1/2 rounded-xl overflow-hidden mx-2'>
                     <img className='object-cover h-full' src={course.image}></img>
@@ -30,7 +54,14 @@ const CourseBox = ({ course }) => {
                 </div>
             </div>
             <div className='flex justify-center mt-5'>
-                <Button size='large' type='primary' className='bg-color-button'>Register</Button>
+                <Button
+                    onClick={handleRegister}
+                    size='large'
+                    type={!isLoading && 'primary'}
+                    className={!isLoading && 'bg-color-button'}
+                >
+                    {isLoading ? <Spin /> : 'Register'}
+                </Button>
             </div>
         </>
     )
@@ -44,7 +75,6 @@ const CourseBox = ({ course }) => {
                     rounded-lg
                     shadow-xl
                     w-72
-                    m-10 mt-0
                     overflow-hidden
                     hover:cursor-pointer
                     hover:w-80
@@ -62,6 +92,15 @@ const CourseBox = ({ course }) => {
                         <p>{course.subject.name ?? 'Khong co'} - {course.teacher?.full_name ?? 'None'}</p>
                         <i>{course.startAt} - {course.endAt}</i>
                     </div>
+                    {
+                        enroll_date &&
+                        <div className='flex justify-center border-t-2 py-2'>
+                            <b>
+                                Enrolled:  {dayjs(enroll_date).format('DD/MM/YYYY')}
+                            </b>
+
+                        </div>
+                    }
 
                 </div >
                 <Modal open={isOpenDetail} onCancel={() => { setIsOpenDetail(false) }} footer={null} width={800}>

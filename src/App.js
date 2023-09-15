@@ -9,6 +9,7 @@ import { AxiosInterceptor } from './services/customizeAxios';
 import LoginPage from './containers/login/LoginPage';
 import RequireAuth from './components/RequiredAuth';
 import CoursesManagement from './containers/courses/CoursesManagement';
+import MyCourses from './containers/courses/MyCourses';
 
 function App() {
 
@@ -17,6 +18,12 @@ function App() {
     console.log("url changed")
   }, [location]);
 
+  const allowedRoles = {
+    student: 'student',
+    admin: 'admin',
+    teacher: 'teacher'
+  }
+
   return (
     <>
       <div className="App">
@@ -24,13 +31,14 @@ function App() {
         <Container>
           <Routes>
             <Route path='/' element={<Home />} />
-            <Route element={<RequireAuth allowedRoles={['student', 'admin', 'teacher']} />}>
+            <Route element={<RequireAuth allowedRoles={[allowedRoles.admin, allowedRoles.student, allowedRoles.teacher]} />}>
               <Route path='/courses' element={<Courses />} />
+              <Route path='/my-courses' element={<MyCourses />} />
+              <Route path='/profile' element={<Profile />} />
             </Route>
 
             <Route path='/about' element={<About />} />
             <Route path='/contact' element={<Contact />} />
-            <Route path='/profile' element={<Profile />} />
             <Route path='/login' element={<LoginPage />} />
             <Route element={<RequireAuth allowedRoles={['admin']} />}>
               <Route path='/admin/courses' element={<CoursesManagement />} />

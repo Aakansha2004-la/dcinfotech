@@ -37,7 +37,9 @@ const Profile = () => {
                 <NavLink Name={'text-2xl'} to={'/profile/feedback'}>Feedback</NavLink>
             </Space>
             <div className='basis-3/4 shadow-xl rounded-2xl mx-2 h-5/6 p-10'>
-                <MyProfile user={user} profile={profile} fetchProfile={getUserProfile} />
+                <div>
+                    Hello
+                </div>
             </div>
         </div>
     )

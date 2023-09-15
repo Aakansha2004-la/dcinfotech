@@ -47,6 +47,17 @@ const Navbar = () => {
         </>
     )
 
+    if (auth?.roles?.includes('student')) {
+        NavAuthorized = (
+            <>
+                <NavLinkCss path={'/courses'} title={'Courses'} />
+                <NavLinkCss path={'/my-courses'} title={'My Courses'} />
+                <NavLinkCss path={'/about'} title={'About'} />
+                <NavLinkCss path={'/contact'} title={'Contact'} />
+            </>
+        )
+    }
+
     if (auth?.roles?.includes('admin')) {
         NavAuthorized = (
             <>
