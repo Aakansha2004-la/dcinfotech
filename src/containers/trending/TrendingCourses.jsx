@@ -35,7 +35,7 @@ const TrendingCourses = () => {
             <h3 className='font-bold text-4xl my-20 text-center'>Most Trending Course</h3>
             <div className='mb-20 flex flex-row justify-center items-center'>
                 {hotCourses && hotCourses?.map(course => {
-                    return <CourseBox data={course} key={course.id} />
+                    return <div className='mx-10'> <CourseBox data={course} key={course.id} /></div>
                 })}
             </div>
         </div>

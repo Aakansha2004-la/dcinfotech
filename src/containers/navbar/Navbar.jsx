@@ -9,6 +9,7 @@ import { toast } from 'react-toastify';
 import { Modal } from 'antd';
 import useAuth from '../../hooks/useAuth';
 import jwtDecode from 'jwt-decode';
+import { allowedRoles } from '../../App';
 
 const Navbar = () => {
     const [login, setLogin] = useState(false);
@@ -47,7 +48,7 @@ const Navbar = () => {
         </>
     )
 
-    if (auth?.roles?.includes('student')) {
+    if (auth?.roles?.includes(allowedRoles.student)) {
         NavAuthorized = (
             <>
                 <NavLinkCss path={'/courses'} title={'Courses'} />
@@ -58,7 +59,7 @@ const Navbar = () => {
         )
     }
 
-    if (auth?.roles?.includes('admin')) {
+    if (auth?.roles?.includes(allowedRoles.admin)) {
         NavAuthorized = (
             <>
                 <NavLinkCss path={'/admin/courses'} title={'Courses'} />

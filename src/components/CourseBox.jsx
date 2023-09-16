@@ -3,39 +3,32 @@ import React, { useState } from 'react'
 import useAuth from '../hooks/useAuth';
 import { apiEnrollCourse } from '../services/EnrollServices';
 import dayjs from 'dayjs';
+import { displayDateFormat } from '../containers/common';
 
-const CourseBox = ({ data, enroll_date }) => {
-    const [isOpenDetail, setIsOpenDetail] = useState(false);
+
+
+const CourseDetail = ({ course, closeDetail }) => {
     const [isLoading, setIsLoading] = useState(false);
-    const { auth } = useAuth();
-
-    console.log(data);
-
-    const course = {
-        ...data,
-        startAt: dayjs(data.start_at).format('DD/MM/YYYY'),
-        endAt: dayjs(data.end_at).format('DD/MM/YYYY'),
-    }
-
-
-    const openDetail = () => {
-        console.log(JSON.stringify(auth));
-        setIsOpenDetail(true);
-    }
 
     const handleRegister = async () => {
-        setIsLoading(true);
-        const response = await apiEnrollCourse(course.id);
-        setIsLoading(false);
-        if (response.success) {
-            message.success('Register successfully');
-            setIsOpenDetail(false);
-        } else {
-            message.error(response.data);
+        try {
+            setIsLoading(true);
+            const response = await apiEnrollCourse(course.id);
+            setIsLoading(false);
+            if (response.success) {
+                message.success('Register successfully');
+                closeDetail();
+            } else {
+                message.error(response.data);
+            }
+        } catch (e) {
+            message.error(e + '');
+            setIsLoading(false);
         }
+
     }
 
-    const CourseDetail = () => (
+    return (
         <>
             <h1 className='text-4xl font-extrabold'>{course.name}</h1>
             <div className='flex'>
@@ -65,7 +58,24 @@ const CourseBox = ({ data, enroll_date }) => {
             </div>
         </>
     )
+}
 
+
+const CourseBox = ({ data, enroll_date }) => {
+    const [isOpenDetail, setIsOpenDetail] = useState(false);
+    const { auth } = useAuth();
+
+    const course = {
+        ...data,
+        startAt: dayjs(data.start_at).format(displayDateFormat),
+        endAt: dayjs(data.end_at).format(displayDateFormat),
+    }
+
+
+    const openDetail = () => {
+        console.log(JSON.stringify(auth));
+        setIsOpenDetail(true);
+    }
 
     if (course !== undefined) {
         return (
@@ -96,7 +106,7 @@ const CourseBox = ({ data, enroll_date }) => {
                         enroll_date &&
                         <div className='flex justify-center border-t-2 py-2'>
                             <b>
-                                Enrolled:  {dayjs(enroll_date).format('DD/MM/YYYY')}
+                                Enrolled:  {dayjs(enroll_date).format(displayDateFormat)}
                             </b>
 
                         </div>
@@ -104,7 +114,7 @@ const CourseBox = ({ data, enroll_date }) => {
 
                 </div >
                 <Modal open={isOpenDetail} onCancel={() => { setIsOpenDetail(false) }} footer={null} width={800}>
-                    <CourseDetail />
+                    <CourseDetail course={course} closeDetail={() => { setIsOpenDetail(false) }} />
                 </Modal>
             </>
 

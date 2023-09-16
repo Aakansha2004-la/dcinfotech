@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { storage } from '../../firebase';
 import { ref, uploadBytes, listAll, getDownloadURL } from 'firebase/storage';
 import { v4 } from 'uuid'
-import { Button, Image, Space } from 'antd';
+import { Button, Image, Space, Spin } from 'antd';
 import useAuth from '../../hooks/useAuth';
 import { apiGetUserProfile } from '../../services/UserServices';
 import MyProfile from './MyProfile';
@@ -12,12 +12,13 @@ const Profile = () => {
     const { auth } = useAuth();
     const [user, setUser] = useState();
     const [profile, setProfile] = useState();
+    const [isLoading, setIsLoading] = useState(false);
 
-    console.log(user);
-    console.log(profile);
 
     const getUserProfile = async () => {
+        setIsLoading(true);
         const response = await apiGetUserProfile(auth?.userId);
+        setIsLoading(false);
         console.log(response);
         setUser(response.data);
         setProfile(response.data.student ?? response.data.teacher ?? null);
@@ -37,7 +38,9 @@ const Profile = () => {
                 <NavLink Name={'text-2xl'} to={'/profile/feedback'}>Feedback</NavLink>
             </Space>
             <div className='basis-3/4 shadow-xl rounded-2xl mx-2 h-5/6 p-10'>
-                <MyProfile user={user} profile={profile} fetchProfile={getUserProfile} />
+                {
+                    isLoading ? <Spin size='large' /> : <MyProfile user={user} profile={profile} fetchProfile={getUserProfile} />
+                }
             </div>
         </div>
     )

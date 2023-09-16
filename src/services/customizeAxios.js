@@ -28,9 +28,8 @@ instance.interceptors.response.use(function (response) {
     if (
         error.response.status === 401
     ) {
-        window.location.href = '/';
         localStorage.clear();
-        return Promise.reject(error)
+        throw new Error('You have to login first');
     }
 
     return Promise.reject(error);

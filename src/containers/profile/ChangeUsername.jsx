@@ -13,9 +13,6 @@ const Profile = () => {
     const [user, setUser] = useState();
     const [profile, setProfile] = useState();
 
-    console.log(user);
-    console.log(profile);
-
     const getUserProfile = async () => {
         const response = await apiGetUserProfile(auth?.userId);
         console.log(response);

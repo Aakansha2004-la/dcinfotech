@@ -11,6 +11,7 @@ import { apiGetMostEnrolledCourse } from '../../services/EnrollServices';
 import { toast } from 'react-toastify';
 import useAuth from '../../hooks/useAuth';
 import MultiSelectSubjects from '../../components/MultiSelectSubjects';
+import { displayDateFormat, valueDateFormat } from '../common';
 
 
 const { RangePicker } = DatePicker;
@@ -50,9 +51,7 @@ const Courses = () => {
                     const meta = coursesResponse.data.meta;
                     console.log(meta);
                     setTotalPage(meta.pageCount);
-                    const get = coursesResponse.data.data;
-                    // console.log(Array.isArray(get));
-                    setCourses(get);
+                    setCourses(coursesResponse.data.data);
                 })
                 .catch((error) => {
                     toast.error(error);
@@ -113,8 +112,8 @@ const Courses = () => {
                         />
                         <RangePicker
                             onChange={handleOnchangeDate}
-                            defaultValue={[dayjs('01/01/2020', 'DD/MM/YYYY'), dayjs('01/01/2030', 'DD/MM/YYYY')]}
-                            format={'YYYY-MM-DD'}
+                            defaultValue={[dayjs('01/01/2020', displayDateFormat), dayjs('01/01/2030', displayDateFormat)]}
+                            format={valueDateFormat}
                             className='w-11/12 my-3'
                         />
                         <MultiSelectTeachers

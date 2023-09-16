@@ -34,15 +34,7 @@ const CoursesManagement = () => {
             .then((coursesResponse) => {
                 const meta = coursesResponse.data.meta;
                 setTotal(meta.itemCount);
-                const get = coursesResponse.data.data?.map(course => {
-                    return {
-                        ...course,
-                        start_at: dayjs(course.start_at).format('DD/MM/YYYY'),
-                        end_at: dayjs(course.end_at).format('DD/MM/YYYY'),
-                    }
-                });
-                // console.log(Array.isArray(get));
-                setCourses(get);
+                setCourses(coursesResponse.data.data);
             })
             .catch((error) => {
                 toast.error(error);

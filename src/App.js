@@ -11,6 +11,12 @@ import RequireAuth from './components/RequiredAuth';
 import CoursesManagement from './containers/courses/CoursesManagement';
 import MyCourses from './containers/courses/MyCourses';
 
+export const allowedRoles = {
+  student: 'student',
+  admin: 'admin',
+  teacher: 'teacher'
+}
+
 function App() {
 
   const location = useLocation();
@@ -18,11 +24,6 @@ function App() {
     console.log("url changed")
   }, [location]);
 
-  const allowedRoles = {
-    student: 'student',
-    admin: 'admin',
-    teacher: 'teacher'
-  }
 
   return (
     <>
@@ -40,7 +41,7 @@ function App() {
             <Route path='/about' element={<About />} />
             <Route path='/contact' element={<Contact />} />
             <Route path='/login' element={<LoginPage />} />
-            <Route element={<RequireAuth allowedRoles={['admin']} />}>
+            <Route element={<RequireAuth allowedRoles={[allowedRoles.admin]} />}>
               <Route path='/admin/courses' element={<CoursesManagement />} />
             </Route>
           </Routes>
