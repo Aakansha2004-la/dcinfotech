@@ -8,8 +8,8 @@ const RegisterForm = ({ handleExitRegister }) => {
     <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50 z-50 shadow-2xl ">
       <div className='bg-slate-100 h-4/6 w-2/5 rounded-xl flex flex-col items-center justify-start relative slide-in-top transition-opacity: ease-linear'>
         <CloseOutlined onClick={handleExitRegister} style={{ position: 'absolute', top: '20px', right: '20px', fontSize: '24px', cursor: 'pointer' }} />
-        <h3 className='font-bold text-3xl text-color-text my-12 mb-5'>Register</h3>
-        <p className='pb-10'>Become a part of our community!</p>
+        <h3 className='font-bold text-3xl text-black my-12 mb-5'>Register</h3>
+        <p className='pb-10 text-black'>Become a part of our community!</p>
         <form className='w-4/5 flex flex-col'>
           <Input style={{ height: '50px', marginBottom: '16px' }} size="large" placeholder="Username or Email" prefix={<UserOutlined />} />
           <Input.Password style={{ height: '50px', marginBottom: '16px' }} size='large' placeholder="Password" prefix={<LockOutlined />} />

@@ -15,28 +15,28 @@ const Contact = () => {
                             <PhoneOutlined style={{ color: 'white', fontSize: '24px', marginLeft: '30px', marginRight: '20px' }} />
                             <p className='text-white me-5'>
                                 <b>Phone: </b>
-                                0965037791
+                                882735568
                             </p>
                         </div>
                         <div className='w-full flex align-top mb-5' >
                             <MailOutlined style={{ color: 'white', fontSize: '24px', marginLeft: '30px', marginRight: '20px' }} />
                             <p className='text-white me-5'>
                                 <b>Mail: </b>
-                                quangtu2301@gmail.com
+                                aakanshaclg26@gmail.com
                             </p>
                         </div>
                         <div className='w-full flex align-top mb-5' >
                             <GithubOutlined style={{ color: 'white', fontSize: '24px', marginLeft: '30px', marginRight: '20px' }} />
                             <p className='text-white me-5'>
                                 <b>Github: </b>
-                                <a href='https://github.com/tuwang2301'>tuwang2301</a>
+                                <a href='https://github.com/Aakansha2004-la'>Aakansha</a>
                             </p>
                         </div>
                         <div className='w-full flex align-top mb-5' >
                             <EnvironmentOutlined style={{ color: 'white', fontSize: '24px', marginLeft: '30px', marginRight: '20px' }} />
                             <p className='text-white me-5'>
                                 <b>Address: </b>
-                                Hanoi, Vietnam
+                                Bangalore, India
                             </p>
                         </div>
 

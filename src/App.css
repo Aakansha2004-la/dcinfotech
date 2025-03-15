@@ -5,6 +5,13 @@
   scroll-behavior: smooth;
 }
 
+:root {
+  --color-bg: #4f3a59; /* Example background color */
+  --color-text: #FFFFFF; /* Example text color */
+  --font-family: 'Arial', sans-serif; /* Example font family */
+  --gradient-text: linear-gradient(90deg, #bab1d5, #aa8bb9); /* Example gradient */
+}
+
 body {
   background: var(--color-bg);
   font-family: var(--font-family);
@@ -17,26 +24,13 @@ a {
 }
 
 .gradient__bg {
-  /* ff 3.6+ */
-  background: -moz-radial-gradient(circle at 3% 25%, rgba(0, 40, 83, 1) 0%, rgba(4, 12, 24, 1) 100%);
-
-  /* safari 5.1+,chrome 10+ */
-  background: -webkit-radial-gradient(circle at 3% 25%, rgba(0, 40, 83, 1) 0%, rgba(4, 12, 24, 1) 100%);
-
-  /* opera 11.10+ */
-  background: -o-radial-gradient(circle at 3% 25%, rgba(0, 40, 83, 1) 0%, rgba(4, 12, 24, 1) 100%);
-
-  /* ie 10+ */
-  background: -ms-radial-gradient(circle at 3% 25%, rgba(0, 40, 83, 1) 0%, rgba(4, 12, 24, 1) 100%);
-
-  /* global 92%+ browsers support */
-  background: radial-gradient(circle at 3% 25%, rgba(0, 40, 83, 1) 0%, rgba(4, 12, 24, 1) 100%);
+  background: radial-gradient(circle at 3% 25%, rgb(194, 186, 223) 0%, rgba(4, 12, 24, 1) 100%);
 }
 
 .gradient__text {
   background: var(--gradient-text);
   background-clip: text;
-  -webkit-background-clop: text;
+  -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
@@ -89,10 +83,10 @@ a {
 
 @media screen and (max-width: 550px) {
   .section__padding {
-    padding: 4rem 2rem;
+    padding: 2rem 1rem; /* Adjusted for smaller screens */
   }
 
   .section__margin {
-    margin: 4rem 2rem;
+    margin: 2rem 1rem; /* Adjusted for smaller screens */
   }
 }

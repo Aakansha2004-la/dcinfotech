@@ -1,11 +1,9 @@
-import React, { useEffect, useState } from 'react'
-import { Input, Modal } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Input, DatePicker } from 'antd';
 import CourseBox from '../../components/CourseBox';
 import { Pagination } from '@mui/material';
 import { apiGetCourses } from '../../services/CourseServices';
 import dayjs from 'dayjs';
-import { DatePicker } from 'antd';
-import { apiGetClasses } from '../../services/ClassServices';
 import MultiSelectTeachers from '../../components/MultiSelectTeachers';
 import { apiGetMostEnrolledCourse } from '../../services/EnrollServices';
 import { toast } from 'react-toastify';
@@ -13,13 +11,10 @@ import useAuth from '../../hooks/useAuth';
 import MultiSelectSubjects from '../../components/MultiSelectSubjects';
 import { displayDateFormat, valueDateFormat } from '../common';
 
-
 const { RangePicker } = DatePicker;
-
 const { Search } = Input;
 
 const Courses = () => {
-
     const [courses, setCourses] = useState([]);
     const [page, setPage] = useState(1);
     const [totalPage, setTotalPage] = useState(0);
@@ -29,130 +24,164 @@ const Courses = () => {
     const [teacherIds, setTeacherIds] = useState([]);
     const [subjectIds, setSubjectIds] = useState([]);
     const [hotCourse, setHotCourse] = useState(null);
+    const [loading, setLoading] = useState(false);
 
-    const { auth, setAuth } = useAuth();
+    const { auth } = useAuth();
 
+    // Fetch the most enrolled course
     useEffect(() => {
         const getMostEnrolledCourse = async () => {
-            const courseResponse = await apiGetMostEnrolledCourse();
-            console.log(courseResponse);
-            setHotCourse(courseResponse.data[0]);
-        }
+            try {
+                const courseResponse = await apiGetMostEnrolledCourse();
+                if (courseResponse.success) {
+                    setHotCourse(courseResponse.data[0]);
+                } else {
+                    toast.error('Failed to fetch most enrolled course');
+                }
+            } catch (error) {
+                console.error('Error fetching most enrolled course:', error);
+                toast.error('An error occurred while fetching most enrolled course');
+            }
+        };
+
         getMostEnrolledCourse();
-        return () => {
-        }
-    }, [])
+    }, []);
 
+    // Fetch courses based on filters
     useEffect(() => {
-        try {
-            apiGetCourses('ASC', page, 4, search, startDate, endDate, teacherIds, subjectIds)
-                .then((coursesResponse) => {
-                    console.log(coursesResponse);
-                    const meta = coursesResponse.data.meta;
-                    console.log(meta);
-                    setTotalPage(meta.pageCount);
-                    setCourses(coursesResponse.data.data);
-                })
-                .catch((error) => {
-                    toast.error(error);
-                    return;
-                })
-        } catch (e) {
-            toast.error(e + '');
-        }
+        const fetchCourses = async () => {
+            setLoading(true);
+            try {
+                const coursesResponse = await apiGetCourses(
+                    'ASC',
+                    page,
+                    4,
+                    search,
+                    startDate,
+                    endDate,
+                    teacherIds,
+                    subjectIds
+                );
+                if (coursesResponse.success) {
+                    const meta = coursesResponse.data?.meta || {};
+                    setTotalPage(meta.pageCount || 0);
+                    setCourses(coursesResponse.data?.data || []);
+                } else {
+                    toast.error('Failed to fetch courses');
+                }
+            } catch (error) {
+                console.error('Error fetching courses:', error);
+                toast.error('An error occurred while fetching courses');
+            } finally {
+                setLoading(false);
+            }
+        };
 
-        return () => {
-            console.log('Unmount Courses');
-        }
+        fetchCourses();
     }, [page, search, startDate, endDate, teacherIds, subjectIds]);
 
+    // Handle pagination change
     const handleChange = (event, value) => {
         setPage(value);
     };
 
+    // Handle search input change
     const handleChangeSearch = (e) => {
-        // console.log(e.target.value);
         setSearch(e.target.value);
-        console.log(search);
-    }
+    };
 
+    // Handle date range change
     const handleOnchangeDate = (dates, [start, end]) => {
         if (dates) {
             setStartDate(start);
-            setEndDate(end)
+            setEndDate(end);
         } else {
-            setStartDate('2020-01-01');
-            setEndDate('2030-01-01')
+            setStartDate(null);
+            setEndDate(null);
         }
-    }
+    };
 
+    // Handle teacher selection change
     const onChangeTeachers = (value) => {
-        const teacherIds = value.map(v => v.value)
+        const teacherIds = value?.map((v) => v.value) || [];
         setTeacherIds(teacherIds);
-        console.log(teacherIds);
-    }
+    };
 
+    // Handle subject selection change
     const onChangeSubjects = (value) => {
-        const subjectIds = value.map(v => v.value)
+        const subjectIds = value?.map((v) => v.value) || [];
         setSubjectIds(subjectIds);
-        console.log(subjectIds);
-    }
+    };
 
     return (
-        <div className='w-full h-screen flex justify-center items-center'>
-            <div className='h-full w-5/6 bg-color-bg shadow-2xl rounded-2xl flex overflow-hidden'>
-                <div className='basis-1/3 w-96 bg-color-button'>
-                    <h3 className='pt-10 px-10 font-bold text-4xl text-white'>Courses</h3>
-                    <div className='flex flex-col items-center justify-center'>
+        <div className="w-full h-screen flex justify-center items-center">
+            <div className="h-full w-5/6 bg-color-bg shadow-2xl rounded-2xl flex overflow-hidden">
+                {/* Sidebar */}
+                <div className="basis-1/3 w-96 bg-color-button">
+                    <h3 className="pt-10 px-10 font-bold text-4xl text-white">Courses</h3>
+                    <div className="flex flex-col items-center justify-center">
                         <Search
                             onChange={handleChangeSearch}
                             placeholder="Search what you wanna learn"
                             allowClear
-                            className='w-11/12 my-3'
+                            className="w-11/12 my-3"
                         />
                         <RangePicker
                             onChange={handleOnchangeDate}
                             defaultValue={[dayjs('01/01/2020', displayDateFormat), dayjs('01/01/2030', displayDateFormat)]}
                             format={valueDateFormat}
-                            className='w-11/12 my-3'
+                            className="w-11/12 my-3"
                         />
                         <MultiSelectTeachers
                             value={teacherIds}
                             onChange={onChangeTeachers}
-                            className={'w-11/12 my-3'}
+                            className="w-11/12 my-3"
                         />
                         <MultiSelectSubjects
-                            className={'w-11/12 my-3'}
-                            mode={'multiple'}
+                            className="w-11/12 my-3"
+                            mode="multiple"
                             value={subjectIds}
                             onChange={onChangeSubjects}
                         />
                     </div>
-                    <div className='w-full'>
-                        <h3 className='px-10 py-5 font-bold text-4xl text-white'>Hot Course</h3>
-                        <div className='flex justify-center'>
+                    {/* Hot Course Section */}
+                    <div className="w-full">
+                        <h3 className="px-10 py-5 font-bold text-4xl text-white">Hot Course</h3>
+                        <div className="flex justify-center">
                             {hotCourse && <CourseBox data={hotCourse} />}
                         </div>
                     </div>
                 </div>
-                <div className='basis-3/4 flex justify-center mt-10 relative'>
-                    <div className='h-full w-full flex justify-center items-start'>
-                        <div className='h-full mx-2 flex flex-wrap justify-center items-start' style={{ width: '89%' }}>
-                            {courses.map((course, index) => <div className='mx-10'><CourseBox data={course} key={index} /></div>)}
-                        </div>
+
+                {/* Main Content */}
+                <div className="basis-3/4 flex justify-center mt-10 relative">
+                    <div className="h-full w-full flex justify-center items-start">
+                        {loading ? (
+                            <div className="text-center my-20">Loading courses...</div>
+                        ) : courses.length > 0 ? (
+                            <div className="h-full mx-2 flex flex-wrap justify-center items-start" style={{ width: '89%' }}>
+                                {courses.map((course, index) => (
+                                    <div className="mx-10 my-5" key={index}>
+                                        <CourseBox data={course} />
+                                    </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <div className="text-center my-20">No courses found.</div>
+                        )}
                     </div>
+                    {/* Pagination */}
                     <Pagination
                         style={{ position: 'absolute', bottom: '0' }}
                         onChange={handleChange}
                         page={page}
-                        className='pb-2'
+                        className="pb-2"
                         count={totalPage}
                     />
                 </div>
             </div>
         </div>
+    );
+};
 
-    )
-}
-
-export default Courses
+export default Courses;

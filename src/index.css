@@ -6,9 +6,9 @@
 :root {
   --font-family: 'Roboto Slab', serif;
 
-  --color-bg: #f1f1f9c9;
-  --color-footer: #393D3F;
-  --color-button: #62929E;
-  --color-text: #393D3F;
-  --color-subtext: #546A7B;
+  --color-bg: #b5a7bec9;
+  --color-footer: #111212;
+  --color-button: #7d629e;
+  --color-text: #17191a;
+  --color-subtext: #9b86a2;
 }

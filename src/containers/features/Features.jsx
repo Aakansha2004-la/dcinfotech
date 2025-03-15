@@ -26,7 +26,7 @@ const features = [
 
 const Feature = ({ feature }) => {
     return (
-        <div className="p-8 bg-white rounded-lg drop-shadow-xl h-20 flex items-center">
+        <div className="p-8 bg-black rounded-lg drop-shadow-xl h-20 flex items-center">
             <div>
                 <h3 className='font-bold'>{feature.name}</h3>
                 <p>{feature.des}</p>

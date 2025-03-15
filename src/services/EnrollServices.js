@@ -1,24 +1,51 @@
-import axios from './customizeAxios'
-// import axios from 'axios';
+import axios from './customizeAxios';
 
-const apiGetMostEnrolledCourse = () => {
-    return axios.get('/enrollment/most-enrolled');
-}
+// Fetch the most enrolled course
+const apiGetMostEnrolledCourse = async () => {
+  try {
+    const response = await axios.get('/enrollment/most-enrolled');
+    console.log('Most Enrolled Course Response:', response.data); // Log the response
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching most enrolled course:', error);
+    throw error; // Re-throw the error for handling in the component
+  }
+};
 
-const apiEnrollCourse = (id) => {
-    try {
-        return axios.post(`/enrollment/enroll/${id}`)
-    } catch (e) {
-        throw e;
-    }
-}
+// Enroll in a course
+const apiEnrollCourse = async (id) => {
+  try {
+    const response = await axios.post(`/enrollment/enroll/${id}`);
+    console.log('Enroll Course Response:', response.data); // Log the response
+    return response.data;
+  } catch (error) {
+    console.error('Error enrolling in course:', error);
+    throw error; // Re-throw the error for handling in the component
+  }
+};
 
-const apiUnenrollCourse = (id) => {
-    return axios.delete(`/enrollment/uneroll/${id}`)
-}
+// Unenroll from a course
+const apiUnenrollCourse = async (id) => {
+  try {
+    const response = await axios.delete(`/enrollment/unenroll/${id}`); // Fixed typo
+    console.log('Unenroll Course Response:', response.data); // Log the response
+    return response.data;
+  } catch (error) {
+    console.error('Error unenrolling from course:', error);
+    throw error; // Re-throw the error for handling in the component
+  }
+};
 
-const apiGetEnrolledCourse = () => {
-    return axios.get(`/enrollment/courses`)
-}
+// Fetch enrolled courses
+const apiGetEnrolledCourse = async () => {
+  try {
+    const response = await axios.get('/enrollment/courses');
+    console.log('Enrolled Courses Response:', response.data); // Log the response
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching enrolled courses:', error);
+    throw error; // Re-throw the error for handling in the component
+  }
+};
 
 export { apiGetMostEnrolledCourse, apiEnrollCourse, apiUnenrollCourse, apiGetEnrolledCourse };

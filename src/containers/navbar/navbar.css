@@ -17,14 +17,14 @@
 .navbar__sign p {
     padding: 5px 0;
     font-size: 16px;
-    border-bottom: 2px solid var(--color-bg);
+    border-bottom: 2px solid rgb(158, 133, 170) ;
     transition: border 0.3s;
 }
 
 .navbar__links p:hover,
 .navbar__sign p:hover {
     cursor: pointer;
-    color: var(--color-button);
+    color: rgb(158, 133, 170);
     border-bottom: 2px solid var(--color-button);
 }
 
@@ -36,7 +36,7 @@
 }
 
 .btn {
-    background-color: var(--color-button);
+    background-color: rgb(158, 133, 170);
     color: #fff;
     border-radius: 5px;
     padding: 10px 15px;
@@ -46,7 +46,7 @@
 }
 
 .btn:hover {
-    background-color: rgb(90, 123, 124);
+    background-color: rgb(158, 133, 170);
 }
 
 .active {

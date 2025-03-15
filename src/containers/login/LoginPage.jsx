@@ -11,7 +11,7 @@ const LoginPage = () => {
 
     return (
         <div className="mx-36 my-12 h-96 flex items-center justify-center">
-            <div className='shadow-2xl w-full basis-2/3 bg-slate-100 rounded-xl flex items-center justify-center'>
+            <div className='shadow-2xl w-full basis-2/3 bg-purple-400 rounded-xl flex items-center justify-center'>
                 <LoginForm />
             </div>
         </div>
